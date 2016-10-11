@@ -70,3 +70,18 @@ def after_login(resp):
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/user/<id>')
+@login_required
+def user(id):
+    user = User.query.filter_by(id=id).first()
+    if user == None:
+        flash('User %s not found.')
+        return redirect(url_for('index'))
+    posts = [
+        {'author': user, 'body': 'Test post #1'},
+        {'author': user, 'body': 'Test post #2'}
+    ]
+    return render_template('user.html',
+                           user=user,
+                           posts=posts)
